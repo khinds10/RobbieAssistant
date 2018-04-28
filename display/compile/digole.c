@@ -30,6 +30,7 @@
 #include "Castlevania.h"
 #include "ChipDale.h"
 #include "Contra.h"
+#include "ClearTitle.h"
 #include "DuckTales.h"
 #include "Galaga.h"
 #include "GhostBusters.h"
@@ -46,6 +47,7 @@
 #include "TopGun.h"
 #include "Turtles.h"
 #include "Zelda.h"
+#include "NES.h"
 
 #define _TEXT_ 0
 #define _GRAPH_ 1
@@ -580,6 +582,10 @@ int main (int argc, char* argv[]) {
         drawBitmap256(0, 0, 128, 120, &Turtles,0);
     } else if (strcmp(digoleCommand, "Zelda") == 0) {
         drawBitmap256(0, 0, 128, 116, &Zelda,0);
+    } else if (strcmp(digoleCommand, "NES") == 0) {
+        drawBitmap256(5, 200, 128, 24, &NES,0);
+    } else if (strcmp(digoleCommand, "ClearTitle") == 0) {
+        drawBitmap256(0, 0, 128, 120, &ClearTitle,0);
     }
     printf("\n");
 	return 0;

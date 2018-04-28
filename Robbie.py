@@ -9,12 +9,38 @@ from datetime import datetime
 import RPi.GPIO as GPIO
 import includes.settings as settings
 import includes.data as data
+GPIO.cleanup()
+GPIO.setmode(GPIO.BCM)
 
-def randomTitleScreen(titleScreenNumber):
+# setup LEDs by GPIO pins / buttons and turn off the lights
+BLUE = 17
+YELLOW = 13
+GREEN = 6
+RED = 12
+GPIO.setup(BLUE,GPIO.OUT)
+GPIO.setup(YELLOW,GPIO.OUT)
+GPIO.setup(GREEN,GPIO.OUT)
+GPIO.setup(RED,GPIO.OUT)
+redButton = Button(16)
+blueButton = Button(26)
+
+# begin default display text and button listeners
+subprocess.call(["/home/pi/RobbieAssistant/digole", "setRot90"])
+subprocess.call(["/home/pi/RobbieAssistant/digole", "clear"])
+subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
+
+def randomTitleScreen():
     '''show NES game title screen on the Digole Display
     @titleScreenNumber : number 1 to 20 of which title screen to show
     '''
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "clear"])
+
+    # clear the previous title screen
+    isUpdatingTitle = True
+    subprocess.call(["/home/pi/RobbieAssistant/digole", "ClearTitle"])
+    subprocess.call(["/home/pi/RobbieAssistant/digole", "NES"])
+
+    # show one of 20 titles
+    titleScreenNumber = randint(1,20)
     if titleScreenNumber == 1:
         subprocess.call(["/home/pi/RobbieAssistant/digole", "BlasterMaster"])
     if titleScreenNumber == 2:
@@ -55,107 +81,170 @@ def randomTitleScreen(titleScreenNumber):
         subprocess.call(["/home/pi/RobbieAssistant/digole", "Turtles"])
     if titleScreenNumber == 20:
         subprocess.call(["/home/pi/RobbieAssistant/digole", "Zelda"])
+    isUpdatingTitle = False
 
-def clearDisplay():
-    '''set screen back to default'''
-    global oldMessageShown
-    oldMessageShown = 0
-    showTitleScreenTimeDate()
-    showMessage(time.strftime(" %a, %b %d\n\n%m/%d/%Y"))
+def resetLights():
+    '''THERE...ARE... FOUR LIGHTS!'''
+    GPIO.output(BLUE,GPIO.LOW)
+    GPIO.output(YELLOW,GPIO.LOW)
+    GPIO.output(GREEN,GPIO.LOW)
+    GPIO.output(RED,GPIO.LOW)
 
-def refreshDisplay():
-    '''refresh just the NES title screen and time/date'''
-    showTitleScreenTimeDate()
-
-def showTitleScreenTimeDate():
-    '''show time and weather conditions'''
-    global data
-    try:
-        randomTitleScreen(randint(1,20))
-        now = datetime.now()
-        tempInfo = data.getJSONFromDataFile('temp.data')
-        weatherInfo = data.getJSONFromDataFile('weather.data')
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "123"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "170", "50", now.strftime("%I:%M")])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "120"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "150", "90", data.convertToString(data.convertToInt(weatherInfo['apparentTemperature'])) + "*F / " + data.convertToString(data.convertToInt(tempInfo['temp'])) + "*F"])
-    except:
-        pass
-
-def logMessageToFile():
-    '''log messages to file for later reference'''
-    global currentMessage
-    data.appendRawToFile('notifications.log', "\n" + currentMessage)
-
+previousMessage = ''
 def showMessage(message):
     '''show messages on screen, making the original message black first'''
-    global currentMessage
+    global previousMessage
     subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "51"])
     subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "0", "150", currentMessage])
+    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "0", "150", previousMessage])
     subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
     subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "0", "150", message])
-    currentMessage = message
+    previousMessage = message
+    
+previousMessageCount = ''
+def showUnreadMessageCount(count):
+    '''show how many messages unread'''
+    global previousMessageCount
+    messageCount = str(count) + " unread"
+    subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "18"])
+    subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
+    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "220", "210", previousMessageCount])
+    resetLights()
+    if count > 0:
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "250"])
+        GPIO.output(RED,GPIO.HIGH)
+    else:
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "222"])
+        GPIO.output(GREEN,GPIO.HIGH)
+    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "220", "210", messageCount])
+    previousMessageCount = messageCount
 
-def checkForMessages():
-    '''ask the dashboard instance for a new message to show'''
-    global recentMessage
-    try:
-        incomingMessage = json.loads(unicode(subprocess.check_output(['curl', "http://" + settings.dashboardServer + "/message"]), errors='ignore'))
-        message = str(incomingMessage["message"])
-        message = message[:100]
-        if (message != recentMessage):
-            showMessage(message)
-            recentMessage = message
-            logMessageToFile()
-        else:
-            showMessage(time.strftime(" %a, %b %d\n\n%m/%d/%Y"))
-    except:
-        pass
+def logMessageToFile(currentMessage):
+    '''log messages to file for later reference'''
+    file = open("/home/pi/RobbieAssistant/logs/notifications.log","a")
+    file.write("\n" + currentMessage)
+
+previousTime = ''
+previousIndoorTemp = ''
+previousOutdoorTemp = ''
+def showTimeWeather():
+    '''show time and weather'''
+    global previousTime, previousIndoorTemp, previousOutdoorTemp
+    
+    # update time and weather
+    now = datetime.now()
+    tempInfo = data.getJSONFromDataFile('temp.data')
+    weatherInfo = data.getJSONFromDataFile('weather.data')     
+    
+    if tempInfo != '' and weatherInfo != '':
+        time = now.strftime("%I:%M")
+        indoorTemp = data.convertToString(data.convertToInt(tempInfo['temp'])) + "*F"
+        outdoorTemp = data.convertToString(data.convertToInt(weatherInfo['apparentTemperature'])) + "*F"
+        
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "123"])
+
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "170", "50", previousTime])    
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "170", "50", time])
+        
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "120"])
+
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "150", "90", previousIndoorTemp])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "254"])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "150", "90", indoorTemp])
+        
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "218", "90", "/"])
+        
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "240", "90", previousOutdoorTemp])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "223"])
+        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "240", "90", outdoorTemp])
+        
+        previousTime = time
+        previousIndoorTemp = indoorTemp
+        previousOutdoorTemp = outdoorTemp
 
 def scrollOldMessages():
     '''scroll through old messages'''
-    global oldMessageShown
-    if oldMessageShown == 0:
-        recentMessage = ''
-        checkForMessages()
-    else:
-        content = data.getRawDataFromFile('notifications.log');
+    global oldMessageShown, showPreviousMessageTimeout, checkForMessageTimeout, isUpdatingTitle
+    
+    # ignore if we're updating the title screen
+    if isUpdatingTitle:
+        return False
+    
+    # set the times back to zero because now you're scrolling through old messages
+    showPreviousMessageTimeout = 0
+    checkForMessageTimeout = 0
+    
+    # show previous message based on where you are in the history
+    with open("logs/notifications.log") as f:
+        content = f.readlines()
         content = [x.strip() for x in content]
         content.reverse()
-        showMessage(content[oldMessageShown])
+        message = content[oldMessageShown]
+    previousMessage = message
+    showMessage(message)
     oldMessageShown = oldMessageShown + 1
 
-# current messages
+def clearUnread():
+    '''clear unread messages flag'''
+    global unreadMessageCount, oldMessageShown, clearButtonPressedMessage, isUpdatingTitle
+    
+    # ignore if we're updating the title screen
+    if isUpdatingTitle:
+        return False
+    
+    # clear current message and unread count, user acknowledged message activity
+    oldMessageShown = 0
+    unreadMessageCount = 0
+    clearButtonPressedMessage = message
+    showMessage('')
+    showUnreadMessageCount(unreadMessageCount)
+    
+# set variable defaults
 message = ''
-currentMessage = ''
-recentMessage = ''
-
-# begin display an button listeners
-subprocess.call(["/home/pi/RobbieAssistant/digole", "setRot90"])
-subprocess.call(["/home/pi/RobbieAssistant/digole", "clear"])
-subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
-refreshDisplay()
-showMessage(time.strftime(" %a, %b %d\n\n%m/%d/%Y"))
-
-# setup buttons and counts for timeout operations
+maxMessageLength = 48
+previousMessage = 'Hello! This is R.O.B.'
+unreadMessageCount = 0
 oldMessageShown = 0
-checkForMessageCount = 0
-refreshDisplayCount = 0
-redButton = Button(16)
-blueButton = Button(26)
+clearButtonPressedMessage = ''
+isUpdatingTitle = False
+
+# timeout values
+checkForMessageTimeout = 0
+rotateTitleTimeout = 0
+
+# setup the display
+resetLights()
+randomTitleScreen()
+showTimeWeather()
 
 # start Robbie!
 while True:
-    redButton.when_pressed = clearDisplay
+    redButton.when_pressed = clearUnread
     blueButton.when_pressed = scrollOldMessages
-    checkForMessageCount = checkForMessageCount + 1
-    refreshDisplayCount = refreshDisplayCount + 1
 
-    if refreshDisplayCount > 60000:
-        refreshDisplay()
-        refreshDisplayCount = 0
+    # check for new messages
+    checkForMessageTimeout = checkForMessageTimeout + 1
+    if checkForMessageTimeout > 10000:
+        incomingMessage = json.loads(unicode(subprocess.check_output(['curl', "http://" + settings.dashboardServer + "/message"]), errors='ignore'))
+        message = str(incomingMessage["message"])
+        message = message[:maxMessageLength]
+        
+        # if new message then show it as long as the previous message wasn't cleared out by the clear button press
+        if (previousMessage != message) and (clearButtonPressedMessage != message):
+            logMessageToFile(message)
+            showMessage(message)
+            unreadMessageCount = unreadMessageCount + 1
+            showUnreadMessageCount(unreadMessageCount)
+        checkForMessageTimeout = 0
 
-    if checkForMessageCount > 10000:
-        checkForMessages()
-        checkForMessageCount = 0
+    # rotate the title screen shown and time / weather
+    rotateTitleTimeout = rotateTitleTimeout + 1
+    if rotateTitleTimeout > 60000:
+        randomTitleScreen()
+        showTimeWeather()
+        rotateTitleTimeout = 0    
