@@ -24,10 +24,14 @@ GPIO.setup(RED,GPIO.OUT)
 redButton = Button(16)
 blueButton = Button(26)
 
+# digole local executable for display and log file location
+digoleCommand = "/home/pi/RobbieAssistant/digole"
+notificationsLogFile = "/home/pi/RobbieAssistant/logs/notifications.log"
+
 # begin default display text and button listeners
-subprocess.call(["/home/pi/RobbieAssistant/digole", "setRot90"])
-subprocess.call(["/home/pi/RobbieAssistant/digole", "clear"])
-subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
+subprocess.call([digoleCommand, "setRot90"])
+subprocess.call([digoleCommand, "clear"])
+subprocess.call([digoleCommand, "setColor", "255"])
 
 def randomTitleScreen():
     '''show NES game title screen on the Digole Display
@@ -36,51 +40,51 @@ def randomTitleScreen():
 
     # clear the previous title screen
     isUpdatingTitle = True
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "ClearTitle"])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "NES"])
+    subprocess.call([digoleCommand, "ClearTitle"])
+    subprocess.call([digoleCommand, "NES"])
 
     # show one of 20 titles
     titleScreenNumber = randint(1,20)
     if titleScreenNumber == 1:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "BlasterMaster"])
+        subprocess.call([digoleCommand, "BlasterMaster"])
     if titleScreenNumber == 2:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "Castlevania"])
+        subprocess.call([digoleCommand, "Castlevania"])
     if titleScreenNumber == 3:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "ChipDale"])
+        subprocess.call([digoleCommand, "ChipDale"])
     if titleScreenNumber == 4:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "Contra"])
+        subprocess.call([digoleCommand, "Contra"])
     if titleScreenNumber == 5:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "DuckTales"])
+        subprocess.call([digoleCommand, "DuckTales"])
     if titleScreenNumber == 6:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "Galaga"])
+        subprocess.call([digoleCommand, "Galaga"])
     if titleScreenNumber == 7:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "GhostBusters"])
+        subprocess.call([digoleCommand, "GhostBusters"])
     if titleScreenNumber == 8:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "Gradius"])
+        subprocess.call([digoleCommand, "Gradius"])
     if titleScreenNumber == 9:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "KidIcarus"])
+        subprocess.call([digoleCommand, "KidIcarus"])
     if titleScreenNumber == 10:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "MarbleMadness"])
+        subprocess.call([digoleCommand, "MarbleMadness"])
     if titleScreenNumber == 11:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "MegaMan"])
+        subprocess.call([digoleCommand, "MegaMan"])
     if titleScreenNumber == 12:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "MetalGear"])
+        subprocess.call([digoleCommand, "MetalGear"])
     if titleScreenNumber == 13:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "Metroid"])
+        subprocess.call([digoleCommand, "Metroid"])
     if titleScreenNumber == 14:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "PunchOut"])
+        subprocess.call([digoleCommand, "PunchOut"])
     if titleScreenNumber == 15:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "SuperMario2"])
+        subprocess.call([digoleCommand, "SuperMario2"])
     if titleScreenNumber == 16:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "SuperMario3"])
+        subprocess.call([digoleCommand, "SuperMario3"])
     if titleScreenNumber == 17:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "TMNT2"])
+        subprocess.call([digoleCommand, "TMNT2"])
     if titleScreenNumber == 18:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "TopGun"])
+        subprocess.call([digoleCommand, "TopGun"])
     if titleScreenNumber == 19:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "Turtles"])
+        subprocess.call([digoleCommand, "Turtles"])
     if titleScreenNumber == 20:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "Zelda"])
+        subprocess.call([digoleCommand, "Zelda"])
     isUpdatingTitle = False
 
 def resetLights():
@@ -94,11 +98,11 @@ previousMessage = ''
 def showMessage(message):
     '''show messages on screen, making the original message black first'''
     global previousMessage
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "51"])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "0", "150", previousMessage])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "0", "150", message])
+    subprocess.call([digoleCommand, "setFont", "51"])
+    subprocess.call([digoleCommand, "setColor", "0"])
+    subprocess.call([digoleCommand, "printxy_abs", "0", "150", previousMessage])
+    subprocess.call([digoleCommand, "setColor", "255"])
+    subprocess.call([digoleCommand, "printxy_abs", "0", "150", message])
     previousMessage = message
     
 previousMessageCount = ''
@@ -106,22 +110,22 @@ def showUnreadMessageCount(count):
     '''show how many messages unread'''
     global previousMessageCount
     messageCount = str(count) + " unread"
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "18"])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "220", "210", previousMessageCount])
+    subprocess.call([digoleCommand, "setFont", "18"])
+    subprocess.call([digoleCommand, "setColor", "0"])
+    subprocess.call([digoleCommand, "printxy_abs", "220", "210", previousMessageCount])
     resetLights()
     if count > 0:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "250"])
+        subprocess.call([digoleCommand, "setColor", "250"])
         GPIO.output(RED,GPIO.HIGH)
     else:
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "222"])
+        subprocess.call([digoleCommand, "setColor", "222"])
         GPIO.output(GREEN,GPIO.HIGH)
-    subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "220", "210", messageCount])
+    subprocess.call([digoleCommand, "printxy_abs", "220", "210", messageCount])
     previousMessageCount = messageCount
 
 def logMessageToFile(currentMessage):
     '''log messages to file for later reference'''
-    file = open("/home/pi/RobbieAssistant/logs/notifications.log","a")
+    file = open(notificationsLogFile,"a")
     file.write("\n" + currentMessage)
 
 previousTime = ''
@@ -141,27 +145,27 @@ def showTimeWeather():
         indoorTemp = data.convertToString(data.convertToInt(tempInfo['temp'])) + "*F"
         outdoorTemp = data.convertToString(data.convertToInt(weatherInfo['apparentTemperature'])) + "*F"
         
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "123"])
+        subprocess.call([digoleCommand, "setFont", "123"])
 
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "170", "50", previousTime])    
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "170", "50", time])
+        subprocess.call([digoleCommand, "setColor", "0"])
+        subprocess.call([digoleCommand, "printxy_abs", "170", "50", previousTime])    
+        subprocess.call([digoleCommand, "setColor", "255"])
+        subprocess.call([digoleCommand, "printxy_abs", "170", "50", time])
         
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setFont", "120"])
+        subprocess.call([digoleCommand, "setFont", "120"])
 
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "150", "90", previousIndoorTemp])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "254"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "150", "90", indoorTemp])
+        subprocess.call([digoleCommand, "setColor", "0"])
+        subprocess.call([digoleCommand, "printxy_abs", "150", "90", previousIndoorTemp])
+        subprocess.call([digoleCommand, "setColor", "254"])
+        subprocess.call([digoleCommand, "printxy_abs", "150", "90", indoorTemp])
         
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "255"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "218", "90", "/"])
+        subprocess.call([digoleCommand, "setColor", "255"])
+        subprocess.call([digoleCommand, "printxy_abs", "218", "90", "/"])
         
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "0"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "240", "90", previousOutdoorTemp])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "setColor", "223"])
-        subprocess.call(["/home/pi/RobbieAssistant/digole", "printxy_abs", "240", "90", outdoorTemp])
+        subprocess.call([digoleCommand, "setColor", "0"])
+        subprocess.call([digoleCommand, "printxy_abs", "240", "90", previousOutdoorTemp])
+        subprocess.call([digoleCommand, "setColor", "223"])
+        subprocess.call([digoleCommand, "printxy_abs", "240", "90", outdoorTemp])
         
         previousTime = time
         previousIndoorTemp = indoorTemp
@@ -180,7 +184,7 @@ def scrollOldMessages():
     checkForMessageTimeout = 0
     
     # show previous message based on where you are in the history
-    with open("logs/notifications.log") as f:
+    with open(notificationsLogFile) as f:
         content = f.readlines()
         content = [x.strip() for x in content]
         content.reverse()
