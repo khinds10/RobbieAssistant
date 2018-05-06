@@ -153,26 +153,27 @@ Find the file `settings-shadow.py` in the `/includes/` folder of the project and
 
 **RaspberriPi Zero**
 
-![Pi Zero](https://github.com/khinds10/RobbieAssistant/master/images/pizero.jpg "Pi Zero")
+
+![Pi Zero](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/pizero.jpg "Pi Zero")
 
 **DHT11 Humidistat**
 
-![DHT11 Humidistat](https://github.com/khinds10/RobbieAssistant/master/images/dht11.jpg "DHT11 Humidistat")
+![DHT11 Humidistat](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/dht11.jpg "DHT11 Humidistat")
 
 LED Lights (x4) Green / Yellow / Blue / Red
 
-![LED Lights](https://github.com/khinds10/RobbieAssistant/master/images/led.jpg "LED Lights")
+![LED Lights](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/led.jpg "LED Lights")
 
 **2.6" Digole Display**
 
-![Digole Display](https://github.com/khinds10/RobbieAssistant/master/images/display.png "Digole Display")
+![Digole Display](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/display.png "Digole Display")
 
 ## Build and wire the device
 
 **1) Prepare the Digole Display for i2C**
 
 On the back of the Digole Display, solder the jumper to assign the display to use the i2c protocol
-![i2c Jumper Digole](https://github.com/khinds10/RobbieAssistant/master/images/display-back.png "i2c Jumper Digole")
+![i2c Jumper Digole](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/display-back.png "i2c Jumper Digole")
 
 ## Using a 3d printer, print the cover, box and back panels
 
@@ -192,7 +193,7 @@ Robot Print by: Mini Nintendo R.O.B. - by RabbitEngineering
 
 https://www.thingiverse.com/thing:1494964
 
-![Wiring Diagram](https://github.com/khinds10/RobbieAssistant/master/images/wiringdiagram.png "Wiring Diagram")
+![Wiring Diagram](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/wiringdiagram.png "Wiring Diagram")
 
 **Digole Display**
 >
