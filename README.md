@@ -125,13 +125,13 @@ Add the following lines to have your raspberrypi automatically connect to your h
 >
 >_syntax on_
 
-# make the logs folder for the application to run
+**make the logs folder for the application to run**
 
 `mkdir /home/pi/RobbieAssistant/logs`
 
 `chmod 777 /home/pi/RobbieAssistant/logs`
 
-## Configure Application to run correctly in settings.py config file
+**Configure Application to run correctly in settings.py config file**
 
 Find the file `settings-shadow.py` in the `/includes/` folder of the project and copy it to `settings.py` and adjust to your current settings
 
