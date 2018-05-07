@@ -1,7 +1,9 @@
 # RobbieAssistant
 Desktop Phone Notification Assistant Featuring (R.O.B.) Robotic Operating Buddy
 
-![Final Construction](https://raw.githubusercontent.com/khinds10/XXX.jpg "Final Construction")
+![Finished!](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/finished.jpg "Finished!")
+
+![Demo](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/demo.gif "Demo")
 
 #### Flashing RaspberriPi Hard Disk / Install Required Software (Using Ubuntu Linux)
 
@@ -153,7 +155,6 @@ Find the file `settings-shadow.py` in the `/includes/` folder of the project and
 
 **RaspberriPi Zero**
 
-
 ![Pi Zero](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/pizero.jpg "Pi Zero")
 
 **DHT11 Humidistat**
@@ -192,6 +193,10 @@ Using the following X STL files in the `3DPrint` folder, R.O.B. Robot, LED Harne
 Robot Print by: Mini Nintendo R.O.B. - by RabbitEngineering
 
 https://www.thingiverse.com/thing:1494964
+
+I used red tape to make the eyes red with the black visor background
+
+![Red Tape](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/red-tape-eyes.png "Red Tape")
 
 ![Wiring Diagram](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/wiringdiagram.png "Wiring Diagram")
 
@@ -255,6 +260,24 @@ https://www.thingiverse.com/thing:1494964
 >
 > GND -> GND
 >
+
+After you've printed the screen holder, connect it to the digole display
+
+![Digole w/ Frame](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/digole-frame.png "Digole w/ Frame")
+
+Connect the Display to the RPi with enough wiring to glue the RPi to the back of the robot
+
+![Connect Digole](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/connect-digole.png "Connect Digole")
+
+Print the controller and wire the buttons with enough wiring to make it to the back of the robot
+
+![Controller](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/controller.png "Controller")
+
+Finish Wiring and assembling the robot with the RPi connected to the back and the DHT11 glued to the bottom
+
+![Rear Wiring](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/rear-wiring.jpg "Rear Wiring")
+
+![Assembled](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/assembled.png "Assembled")
 
 ## Check I2C Configuration
 
@@ -420,3 +443,10 @@ Now rebuild (ignore the errors) below to have your new image render with the fol
 >$ `mv a.out ../../digole`
 
 >$ `chmod +x ../../digole`
+
+## Finished
+
+![Finished!](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/finished.jpg "Finished!")
+
+![Demo](https://raw.githubusercontent.com/khinds10/RobbieAssistant/master/images/demo.gif "Demo")
+
