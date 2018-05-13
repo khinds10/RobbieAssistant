@@ -125,12 +125,13 @@ Add the following lines to have your raspberrypi automatically connect to your h
 >
 >_syntax on_
 
-# make the logs folder for the application to run
+**make the logs folder for the application to run**
 
 `mkdir /home/pi/RobbieAssistant/logs`
+
 `chmod 777 /home/pi/RobbieAssistant/logs`
 
-## Configure Application to run correctly in settings.py config file
+**Configure Application to run correctly in settings.py config file**
 
 Find the file `settings-shadow.py` in the `/includes/` folder of the project and copy it to `settings.py` and adjust to your current settings
 
@@ -402,9 +403,13 @@ Add the script to start at dashboard boot and restart your dashboard pi
 $ `crontab -e`
 
 `@reboot nohup /usr/local/opt/python-3.5.2/bin/python3.5 /home/pi/PushBullet/pushbullet-listener.py >/dev/null 2>&1`
+
 `@reboot nohup /usr/local/opt/python-3.5.3/bin/python3.5 /home/pi/RobbieAssistant/PushBullet/pushbullet-listener.py > /dev/null 2>&1`
+
 `@reboot nohup python /home/pi/RobbieAssistant/Robbie.py > /dev/null 2>&1`
+
 `@reboot nohup python /home/pi/RobbieAssistant/Temp.py > /dev/null 2>&1`
+
 `@reboot nohup python /home/pi/RobbieAssistant/Weather.py > /dev/null 2>&1`
 
 ## OPTIONAL: Creating your own Nintendo images to render on the display
