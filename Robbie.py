@@ -100,7 +100,7 @@ def showMessage(message):
     global previousMessage
     subprocess.call([digoleCommand, "setFont", "51"])
     subprocess.call([digoleCommand, "setColor", "0"])
-    subprocess.call([digoleCommand, "printxy_abs", "0", "150", previousMessage])
+    subprocess.call([digoleCommand, "printxy_abs", "0", "150", '                                                                                            '])
     subprocess.call([digoleCommand, "setColor", "255"])
     subprocess.call([digoleCommand, "printxy_abs", "0", "150", message])
     previousMessage = message
