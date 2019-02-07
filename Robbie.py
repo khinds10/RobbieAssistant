@@ -228,27 +228,30 @@ showTimeWeather()
 
 # start Robbie!
 while True:
-    redButton.when_pressed = clearUnread
-    blueButton.when_pressed = scrollOldMessages
+    try:
+        redButton.when_pressed = clearUnread
+        blueButton.when_pressed = scrollOldMessages
 
-    # check for new messages
-    checkForMessageTimeout = checkForMessageTimeout + 1
-    if checkForMessageTimeout > 10000:
-        incomingMessage = json.loads(unicode(subprocess.check_output(['curl', "http://" + settings.dashboardServer + "/message"]), errors='ignore'))
-        message = str(incomingMessage["message"])
-        message = message[:maxMessageLength]
-        
-        # if new message then show it as long as the previous message wasn't cleared out by the clear button press
-        if (previousMessage != message) and (clearButtonPressedMessage != message):
-            logMessageToFile(message)
-            showMessage(message)
-            unreadMessageCount = unreadMessageCount + 1
-            showUnreadMessageCount(unreadMessageCount)
-        checkForMessageTimeout = 0
+        # check for new messages
+        checkForMessageTimeout = checkForMessageTimeout + 1
+        if checkForMessageTimeout > 10000:
+            incomingMessage = json.loads(unicode(subprocess.check_output(['curl', "http://" + settings.dashboardServer + "/message"]), errors='ignore'))
+            message = str(incomingMessage["message"])
+            message = message[:maxMessageLength]
+            
+            # if new message then show it as long as the previous message wasn't cleared out by the clear button press
+            if (previousMessage != message) and (clearButtonPressedMessage != message):
+                logMessageToFile(message)
+                showMessage(message)
+                unreadMessageCount = unreadMessageCount + 1
+                showUnreadMessageCount(unreadMessageCount)
+            checkForMessageTimeout = 0
 
-    # rotate the title screen shown and time / weather
-    rotateTitleTimeout = rotateTitleTimeout + 1
-    if rotateTitleTimeout > 60000:
-        randomTitleScreen()
-        showTimeWeather()
-        rotateTitleTimeout = 0    
+        # rotate the title screen shown and time / weather
+        rotateTitleTimeout = rotateTitleTimeout + 1
+        if rotateTitleTimeout > 60000:
+            randomTitleScreen()
+            showTimeWeather()
+            rotateTitleTimeout = 0
+    except:
+      print("An exception occurred")
